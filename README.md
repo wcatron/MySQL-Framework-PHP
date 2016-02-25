@@ -5,7 +5,7 @@ A MySQL ODM (assistant) extremely flexible for any project.
 
  Overview
 
-This framework allows you to quickly map objects to documents in a MongoDB collection.
+This framework allows you to quickly map objects to rows in a MySQL database.
 
 **Setup**
 
