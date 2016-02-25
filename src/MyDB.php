@@ -2,36 +2,15 @@
 
 namespace wcatron\MySQLDBFramework;
 
-class MyDB {
+use wcatron\CommonDBFramework\DB;
+
+class MyDB extends DB {
     /** @var \mysqli */
     var $db;
 
-    private static $instance;
-    /**
-     * Gets the singleton instance of MyDB. Used throughout the framework.
-     * @return MyDB Returns the singlton MyDB object.
-     */
-    public static function getInstance($connect = true) {
-        if (null === static::$instance) {
-            static::$instance = new static();
-        }
-        if ($connect) {
-            static::$instance->connect();
-        }
-        return static::$instance;
-    }
-
-    public static function configure($config) {
-        static::getInstance(false)->config = $config;
-    }
-
-    function connect($config = null) {
+    function connect() {
         if (!isset($this->db)) {
-            if ($config == null) {
-                $config = $this->config;
-            }
-            $conn = new \mysqli($config['host'], $config['user'], $config['pass'], $config['db'], $config['port']) or Die("Connection failed");
-            // Check connection
+            $conn = new \mysqli($this->config['host'], $this->config['user'], $this->config['pass'], $this->config['db'], $this->config['port']) or Die("Connection failed");
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             }
@@ -165,7 +144,7 @@ class MyDB {
     function getObjectWithStatement($objectType, $name, $statement, &$values) {
         $results = $this->runPreparedStatement($name, $statement, $values);
         try {
-            $row = pg_fetch_array($results, 0, PGSQL_ASSOC);
+            $row = $results->fetch_assoc();
         } catch (Exception $e) {
             return false;
         }
@@ -173,7 +152,7 @@ class MyDB {
         if ($row == false) {
             return false;
         }
-
+        /** @var Row $object */
         $object = new $objectType();
         $object->fromRow($row);
         return $object;
@@ -184,6 +163,7 @@ class MyDB {
         $objects = [];
 
         while ($row = $results->fetch_assoc()) {
+            /** @var Row $object */
             $object = new $objectType();
             $object->fromRow($row);
             $objects[] = $object;
