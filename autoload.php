@@ -12,6 +12,7 @@ if (file_exists('config.ini')) {
         "host" => "127.0.0.1",
         "user" => "root",
         "pass" => "",
+        "port" => "3306",
         "db" => "mysql_framework_php_testing"
     ];
     MyDB::configure($config);
