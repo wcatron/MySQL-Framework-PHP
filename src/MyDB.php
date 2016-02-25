@@ -283,7 +283,7 @@ class MyDB {
             } else {
                 throw new \Exception('Unsupported type for prepared statements.');
             }
-            $allValues[] = $value;
+            $allValues[] = &$value;
         }
         $ref    = new \ReflectionClass('mysqli_stmt');
         $method = $ref->getMethod("bind_param");

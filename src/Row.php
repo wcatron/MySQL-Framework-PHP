@@ -104,8 +104,8 @@ abstract class Row implements \wcatron\CommonDBFramework\DBObject {
      * @param string[] Values for the selector.
      * @return static
      */
-    public static function getByValues(...$values) {
-        return MyDB::getInstance()->getObjectWithStatement(self::getObjectName(),'get'.static::class,'SELECT * FROM '.static::TABLE.' WHERE '.static::selector(1),$values);
+    public static function getByValues($values) {
+        return MyDB::getInstance()->getObjectWithStatement(self::getObjectName(),'get'.static::class,'SELECT * FROM '.static::TABLE.' WHERE '.static::selector(),$values);
     }
 
     public static function toBoolean($value) {
