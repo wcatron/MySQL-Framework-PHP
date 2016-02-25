@@ -100,7 +100,7 @@ class MyDB {
 
             $result = $this->runPreparedStatement("updateRow" . $object::TABLE . implode('-', $keys), $update_query['statement'], $update_query['values']);
 
-            if ($result === false) {
+            if ($this->db->errno !== 0) {
                 return false;
             }
 
