@@ -1,6 +1,9 @@
 <?php
 
-use SebastianBergmann\Exporter\Exception;
+/**
+ * Local testing can run:
+ * vendor/bin/phpunit --bootstrap autoload.php tests
+ */
 use wcatron\MySQLDBFramework\MyDB;
 
 require 'sample_test_classes.php';
