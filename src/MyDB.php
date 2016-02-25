@@ -117,7 +117,6 @@ class MyDB {
 
         if ($this->db->errno !== 0) {
             return false;
-            //throw(new PostgresException(pg_last_error() . ": deleteRowFrom" . $object::TABLE));
         }
 
         return true;
@@ -202,7 +201,7 @@ class MyDB {
             if ($num > 1) {
                 $statement .= " AND";
             }
-            $statement .= ' ' . $column . ' = $' . $num;
+            $statement .= ' ' . $column . ' = ?';
             $num++;
         }
 
@@ -323,15 +322,15 @@ class MyDB {
     }
 
     function beginTransaction() {
-        pg_query("BEGIN");
+        $this->db->begin_transaction();
     }
 
     function commitTransaction() {
-        pg_query("COMMIT");
+        $this->db->commit();
     }
 
     function rollbackTransaction() {
-        pg_query("ROLLBACK");
+        $this->db->rollback();
     }
 }
 

@@ -65,14 +65,14 @@ abstract class Row implements \wcatron\CommonDBFramework\DBObject {
 
     /** Links child object from a document key, to a class property.
      * @param $object string Fully qualified class string for object.
-     * @param $key string Column name containing the id for the object.
+     * @param $column string Column name containing the id for the object.
      * @param $property string Property name in object that will be used to access the object.
      */
-    public function setObjectForKey($object, $key, $property = null, $rowObjectClass = LinkedObject::class) {
+    public function setObjectForKey($object, $column, $property = null, $rowObjectClass = LinkedObject::class) {
         if ($property == null) {
-            $property = $key;
+            $property = $column;
         }
-        $this->$property = new $rowObjectClass($object, $key);
+        $this->$property = new $rowObjectClass($object, $column);
         $this->linked_objects[] = $property;
     }
 

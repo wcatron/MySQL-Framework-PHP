@@ -18,12 +18,12 @@ class Author extends Row {
 
     function toRow() {
         $row = parent::toRow();
-        $document['name'] = $this->name;
+        $row['name'] = $this->name;
         return $row;
     }
 
     function fromRow($row) {
-        parent::fromDocument($row);
+        parent::fromRow($row);
         $this->name = $row['name'];
     }
 
@@ -39,8 +39,14 @@ class Book extends Row {
     const TABLE = "books";
     const ID_COLUMN = "book_id";
 
-    function __construct() {
-        $this->setObjectForKey(Author::class, 'author');
+    function __construct($title = null,Author $author = null) {
+        $this->setObjectForKey(Author::class, 'author_id', 'author');
+        if ($title) {
+            $this->title = $title;
+        }
+        if ($author) {
+            $this->author->set($author);
+        }
     }
 
     function toRow() {
