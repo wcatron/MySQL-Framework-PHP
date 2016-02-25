@@ -1,5 +1,6 @@
 <?php
 
+use SebastianBergmann\Exporter\Exception;
 use wcatron\MySQLDBFramework\MyDB;
 
 require 'sample_test_classes.php';
@@ -74,17 +75,24 @@ class RowTest extends PHPUnit_Framework_TestCase {
 
     public function testRollback() {
         MyDB::getInstance()->beginTransaction();
-
+        $exception = null;
         try {
             $author = new \Author("Art Buchwald");
             $author->save();
             // This throws an exception because the title is longer than the 45 characters the database allows.
             $book = new Book("Too Soon to Say Goodbye: I Don't Know Where I'm Going. I Don't Even Know Why I'm Here", $author);
             $book->save();
+
+            throw new Exception("Hard coded exception in case travis ci doesn't fail at inserted long title.");
             MyDB::getInstance()->commitTransaction();
         } catch (\Exception $e) {
+            $exception = $e;
             MyDB::getInstance()->rollbackTransaction();
         }
+
+        var_dump($exception->getMessage());
+
+        $this->assertTrue(($exception !== null), "Exception was not thrown during try.");
 
         $authors = Author::getAllObjects();
         $this->assertTrue((count($authors) == 0));
