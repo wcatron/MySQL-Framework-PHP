@@ -103,6 +103,11 @@ class RowTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue((count($books) == 0));
     }
 
+    public function testFailGettingObject() {
+        $author = Author::getOneByColumn('name', 'Unknown Author');
+        $this->assertFalse($author);
+    }
+
 }
 
 ?>

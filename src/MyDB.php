@@ -110,6 +110,7 @@ class MyDB extends DB {
         $values = [$value];
         $results = $this->runPreparedStatement('get' . $objectType . 'By' . $column, 'SELECT * FROM ' . $objectType::TABLE . ' WHERE ' . $column . ' = ? LIMIT 1', $values);
 
+        $row = false;
         if ($results->num_rows == 1) {
             $row = $results->fetch_assoc();
         } else {
