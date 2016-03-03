@@ -4,6 +4,7 @@
  * These classes are not autoloaded on purpose because composer packages can't exclude test files.
  */
 
+use wcatron\CommonDBFramework\DB;
 use wcatron\MySQLDBFramework\Row;
 
 class Author extends Row {
@@ -88,6 +89,48 @@ class Person extends Row {
         parent::fromRow($row);
         $this->name = $row['name'];
         $this->title = $row['title'];
+    }
+}
+
+class TestDB extends DB {
+    var $authors = [];
+
+    var $db = false;
+
+    function connect() {
+        if ($this->db == false) {
+            echo "Connecting... ";
+            $this->db = true;
+            echo "Connected.";
+        }
+    }
+
+    public function saveRow($object, $secure = false) {
+        if (get_class($object) == Author::class) {
+            $id = count($this->authors);
+            $this->authors[] = $object;
+            $object->old_row = array_merge($object->toRow(), [
+                Author::ID_COLUMN => $id
+            ]);
+        }
+    }
+
+    public function removeRow($object) {
+        if (get_class($object) == Author::class) {
+            unset($this->authors[$object->getID()]);
+        }
+    }
+
+    public function getObjectByID($objectType, $id) {
+        if ($objectType == Author::class) {
+            return (isset($this->authors[$id])) ? $this->authors[$id] : false;
+        }
+    }
+
+    public function getAllObjects($objectType) {
+        if ($objectType == Author::class) {
+            return array_values($this->authors);
+        }
     }
 }
 

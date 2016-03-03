@@ -5,12 +5,12 @@
  * vendor/bin/phpunit --bootstrap autoload.php tests
  */
 use wcatron\MySQLDBFramework\MyDB;
-
-require 'sample_test_classes.php';
+use wcatron\MySQLDBFramework\Row;
 
 class RowTest extends PHPUnit_Framework_TestCase {
 
     public function testInsert() {
+        Row::setDBInstance(MyDB::class);
         $person = new \Person("Unit Test", "Mrs.");
         $this->assertTrue(($person->save() !== false));
         $this->assertTrue($person->getID() !== null);

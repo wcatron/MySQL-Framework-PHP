@@ -4,14 +4,16 @@ namespace wcatron\MySQLDBFramework;
 
 use wcatron\CommonDBFramework\DBPagination;
 use wcatron\CommonDBFramework\LinkedObject;
+use wcatron\CommonDBFramework\DBObject;
 
-abstract class Row implements \wcatron\CommonDBFramework\DBObject {
+abstract class Row extends DBObject {
     public $old_row = null;
     /**
      * Array of linked objects.
      * @var LinkedObject[]
      */
     private $linked_objects = array();
+    protected static $dbClass = MyDB::class;
     const TABLE = "undefined";
     /** If using multicolumn primary keys or anything besides a standard Id column
      * then leave null and use selector and getSelectorValues.
@@ -19,7 +21,7 @@ abstract class Row implements \wcatron\CommonDBFramework\DBObject {
     const ID_COLUMN = null;
 
     public function save() {
-        $new_row = MyDB::getInstance()->saveRow($this);
+        $new_row = self::getDBInstance()->saveRow($this);
         if ($new_row) {
             $this->fromRow($new_row);
             return true;
@@ -28,7 +30,7 @@ abstract class Row implements \wcatron\CommonDBFramework\DBObject {
     }
 
     public function delete() {
-        return MyDB::getInstance()->removeRow($this);
+        return self::getDBInstance()->removeRow($this);
     }
 
     public function getID() {
@@ -98,14 +100,14 @@ abstract class Row implements \wcatron\CommonDBFramework\DBObject {
      * @return static
      */
     public static function getByID($id) {
-        return MyDB::getInstance()->getObjectByID(self::getObjectName(),$id);
+        return self::getDBInstance()->getObjectByID(self::getObjectName(),$id);
     }
     /**
      * @param string[] Values for the selector.
      * @return static
      */
     public static function getByValues($values) {
-        return MyDB::getInstance()->getObjectWithStatement(self::getObjectName(),'get'.static::class,'SELECT * FROM '.static::TABLE.' WHERE '.static::selector(),$values);
+        return self::getDBInstance()->getObjectWithStatement(self::getObjectName(),'get'.static::class,'SELECT * FROM '.static::TABLE.' WHERE '.static::selector(),$values);
     }
 
     public static function toBoolean($value) {
@@ -128,7 +130,7 @@ abstract class Row implements \wcatron\CommonDBFramework\DBObject {
      * @return static[]
      */
     public static function getManyByColumn($column, $value) {
-        return MyDB::getInstance()->getObjectsByColumn(static::class, $column, $value);
+        return self::getDBInstance()->getObjectsByColumn(static::class, $column, $value);
     }
 
     /**
@@ -138,7 +140,7 @@ abstract class Row implements \wcatron\CommonDBFramework\DBObject {
      * @return static
      */
     public static function getOneByColumn($column, $value) {
-        return MyDB::getInstance()->getObjectByColumn(static::class, $column, $value);
+        return self::getDBInstance()->getObjectByColumn(static::class, $column, $value);
     }
 
     /**
@@ -149,14 +151,14 @@ abstract class Row implements \wcatron\CommonDBFramework\DBObject {
      * @return static[] Array of objects.
      */
     public static function getObjectsWithStatement($name, $statement, $values, DBPagination $pagination = null) {
-        return MyDB::getInstance()->getObjectsWithStatement(static::class, $name, $statement, $values, $pagination);
+        return self::getDBInstance()->getObjectsWithStatement(static::class, $name, $statement, $values, $pagination);
     }
 
     /**
      * @return static[] Array of objects.
      */
     public static function getAllObjects() {
-        return MyDB::getInstance()->getAllObjects(static::class);
+        return self::getDBInstance()->getAllObjects(static::class);
     }
 
     public function isEqual($object) {
@@ -167,6 +169,12 @@ abstract class Row implements \wcatron\CommonDBFramework\DBObject {
         return !($this->old_row);
     }
 
+    /**
+     * @return MyDB
+     */
+    public static function getDBInstance() {
+        return parent::getDBInstance();
+    }
 
 }
 
