@@ -160,7 +160,8 @@ class MyDB extends DB {
     }
 
     function getObjectsByColumn($objectType, $column, $value) {
-        $results = $this->runPreparedStatement("getObjectsByColumnFrom" . $objectType::TABLE, 'SELECT * FROM ' . $objectType::TABLE . ' WHERE ' . $column . ' = ?', [$value]);
+        $values = [$value];
+        $results = $this->runPreparedStatement("getObjectsByColumnFrom" . $objectType::TABLE, 'SELECT * FROM ' . $objectType::TABLE . ' WHERE ' . $column . ' = ?', $values);
         $objects = [];
 
         while ($row = $results->fetch_assoc()) {

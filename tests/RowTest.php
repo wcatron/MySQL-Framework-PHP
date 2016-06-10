@@ -108,6 +108,29 @@ class RowTest extends PHPUnit_Framework_TestCase {
         $this->assertFalse($author);
     }
 
+    public function testGetManyByColumn() {
+        $author = new \Author("Art Buchwald");
+        $author->save();
+        $bookA = new Book("I Think I Don't Remember");
+        $bookA->author->set($author);
+        $bookB = new Book("Down the Seine and Up the Potomac", $author);
+        $bookC = new Book("The Bollo caper");
+        $bookC->author->setID($author->getID());
+        $bookA->save();
+        $bookB->save();
+        $bookC->save();
+
+        $books = Book::getManyByColumn('author_id', $author->getID());
+
+        $this->assertTrue(count($books) == 3);
+
+        foreach ($books as $book) {
+            $this->assertTrue($book->author->isEqual($author));
+            $book->delete();
+        }
+        $author->delete();
+    }
+
 }
 
 ?>
